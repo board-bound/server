@@ -15,7 +15,8 @@
 		"start": "node dist/index.cjs",
 		"lint": "eslint src",
 		"lint:fix": "eslint --fix src",
-		"prettier": "prettier --write src/**/*.ts"
+		"prettier": "prettier --check src/**/*.ts",
+    "prettier:fix": "prettier --write src/**/*.ts"
 	},
 	"dependencies": {
 		"@board-bound/sdk": "^0.1.0",

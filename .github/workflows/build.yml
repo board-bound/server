@@ -32,7 +32,11 @@ jobs:
       - name: Install dependencies with pnpm
         run: pnpm install
 
-      # Build and generate code
+      # Lint and build
+      - name: Run esLint
+        run: pnpm lint
+      - name: Run prettier
+        run: pnpm prettier
       - name: Build
         run: pnpm build
 
