@@ -1,5 +1,5 @@
 {
-	"name": "server",
+	"name": "@board-bound/server",
 	"version": "IN-DEV",
 	"source": "src/index.ts",
 	"main": "dist/index.cjs",
