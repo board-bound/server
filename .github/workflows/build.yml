@@ -1,0 +1,63 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Environment setup
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20.x'
+          registry-url: 'https://registry.npmjs.org'
+      - name: Install pnpm
+        run: npm i -g pnpm
+      - name: Replace version in package.json to be semver compatible
+        if: github.event_name == 'release'
+        run: sed -i "s/IN-DEV/$(echo $GITHUB_REF | sed 's/refs\/tags\///')/" package.json
+
+      # Install dependencies
+      - name: Install dependencies with pnpm
+        run: pnpm install
+
+      # Build and generate code
+      - name: Build
+        run: pnpm build
+
+      # Upload artifacts to GitHub and NPM
+      - name: Upload build to artifacts
+        if: github.event_name != 'release'
+        uses: actions/upload-artifact@v4
+        with:
+          name: build
+          path: dist
+      - name: Get repository slug
+        if: github.event_name == 'release'
+        id: repo_slug
+        run: echo "REPO_SLUG=$(basename $GITHUB_REPOSITORY)" >> $GITHUB_OUTPUT
+      - name: Upload build to release
+        if: github.event_name == 'release'
+        uses: svenstaro/upload-release-action@v2
+        with:
+          overwrite: true
+          file: dist/index.cjs
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          asset_name: server.cjs
+          tag: ${{ github.ref }}
+      - name: Publish package on NPM
+        if: github.event_name == 'release'
+        run: pnpm publish . --access public --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_SECRET}}

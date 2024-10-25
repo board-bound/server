@@ -1,6 +1,6 @@
 {
 	"name": "server",
-	"version": "1.0.0",
+	"version": "IN-DEV",
 	"source": "src/index.ts",
 	"main": "dist/index.cjs",
 	"module": "dist/index.mjs",

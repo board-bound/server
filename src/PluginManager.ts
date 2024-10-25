@@ -140,7 +140,7 @@ export class PluginManager {
       return;
     }
     this.log.debug('Enabling plugin ' + p.plugin.name);
-    if (!semver.satisfies(this.serverVersion, p.plugin.serverVersion)) {
+    if (this.serverVersion !== 'IN-DEV' && !semver.satisfies(this.serverVersion, p.plugin.serverVersion)) {
       this.log.warn('Plugin ' + p.plugin.name + ' requires server version ' + p.plugin.serverVersion);
       return;
     }
